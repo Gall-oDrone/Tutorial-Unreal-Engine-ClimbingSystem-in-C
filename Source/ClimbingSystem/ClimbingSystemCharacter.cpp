@@ -65,8 +65,6 @@ void AClimbingSystemCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
-	Debug::Print(TEXT("Debug working"));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -86,6 +84,8 @@ void AClimbingSystemCharacter::SetupPlayerInputComponent(class UInputComponent* 
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AClimbingSystemCharacter::Look);
+
+		EnhancedInputComponent->BindAction(ClimbAction, ETriggerEvent::Started, this, &AClimbingSystemCharacter::OnClimbActionStarted);
 
 	}
 
@@ -127,6 +127,9 @@ void AClimbingSystemCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-
+void AClimbingSystemCharacter::OnClimbActionStarted(const FInputActionValue& Value)
+{
+	Debug::Print(TEXT("Climb action started"));
+}
 
 
