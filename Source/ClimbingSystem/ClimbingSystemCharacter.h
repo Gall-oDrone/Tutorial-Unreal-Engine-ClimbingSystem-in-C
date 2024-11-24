@@ -7,7 +7,7 @@
 #include "InputActionValue.h"
 #include "ClimbingSystemCharacter.generated.h"
 
-class CustomMovementComponent;
+class UCustomMovementComponent;
 
 UCLASS(config=Game)
 class AClimbingSystemCharacter : public ACharacter

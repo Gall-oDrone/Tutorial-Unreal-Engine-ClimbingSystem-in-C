@@ -132,7 +132,7 @@ void AClimbingSystemCharacter::Look(const FInputActionValue& Value)
 
 void AClimbingSystemCharacter::OnClimbActionStarted(const FInputActionValue& Value)
 {
-	Debug::Print(TEXT("Climb action started"));
+	//Debug::Print(TEXT("Climb action started"));
 }
 
 
