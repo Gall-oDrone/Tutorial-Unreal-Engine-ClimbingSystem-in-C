@@ -68,9 +68,9 @@ private:
 
 	TArray<FHitResult> ClimbableSurfacesTracedResults;
 
-	FVector CurrentClimableSurfaceLocation;
+	FVector CurrentClimbableSurfaceLocation;
 
-	FVector CurrentClimableSurfaceNormal;
+	FVector CurrentClimbableSurfaceNormal;
 
 #pragma endregion
 
@@ -99,4 +99,5 @@ private:
 public:
 	void ToggleClimbing(bool bEnableClimb);
 	bool IsClimbing() const;
+	FORCEINLINE FVector GetClimbableSurfaceNormal() const { return CurrentClimbableSurfaceNormal;}
 };
