@@ -8,6 +8,19 @@
 
 #include "ClimbingSystem/DebugHelper.h"
 
+void UCustomMovementComponent::BeginPlay()
+{
+    Super::BeginPlay();
+
+    OwningPlayerAnimInstace = CharacterOwner->GetMesh()->GetAnimInstance();
+
+    if (OwningPlayerAnimInstace)
+    {
+        OwningPlayerAnimInstace->OnMontageEnded.AddDynamic(this, &UCustomMovementComponent::OnClimbMontageEnded);
+        OwningPlayerAnimInstace->OnMontageBlendingOut.AddDynamic(this, &UCustomMovementComponent::OnClimbMontageEnded);
+    }
+}
+
 void UCustomMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -15,6 +28,7 @@ void UCustomMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
    /* TraceClimbableSurfaces();
     TraceFromEyeHeight(100.f);*/
 }
+
 
 void UCustomMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)
 {
@@ -150,7 +164,7 @@ void UCustomMovementComponent::ToggleClimbing(bool bEnableClimb)
         if (CanStartClimbing())
         {
             // Enter the climb state
-            StartClimbing();
+            PlayClimbMontage(IdleToClimbMontage);
         }
     }
     else
@@ -320,6 +334,18 @@ FHitResult UCustomMovementComponent::TraceFromEyeHeight(float TraceDistance, flo
     return DoLineTraceSingleByObject(Start, End, false);
 }
 
+void UCustomMovementComponent::PlayClimbMontage(UAnimMontage* MontageToPlay)
+{
+    if (!MontageToPlay) return;
+    if (!OwningPlayerAnimInstace) return;
+    if (OwningPlayerAnimInstace->IsAnyMontagePlaying()) return;
 
+    OwningPlayerAnimInstace->Montage_Play(MontageToPlay);
+}
+
+void UCustomMovementComponent::OnClimbMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+    Debug::Print(TEXT("Climb montage ended"));
+}
 
 #pragma endregion
