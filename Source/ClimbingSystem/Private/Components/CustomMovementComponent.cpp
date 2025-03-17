@@ -359,7 +359,7 @@ bool UCustomMovementComponent::CheckHasReachedLedge()
     if (!LedgeHitResult.bBlockingHit)
     {
         const FVector WalkableSurfaceTraceStart = LedgeHitResult.TraceEnd;
-        const FVector DownVector = UpdatedComponent->GetUpVector();
+        const FVector DownVector = -UpdatedComponent->GetUpVector();
         const FVector WalkableSurfaceTraceEnd = WalkableSurfaceTraceStart + DownVector * 100.f;
 
         FHitResult WalkableSurfaceHitResult = 
