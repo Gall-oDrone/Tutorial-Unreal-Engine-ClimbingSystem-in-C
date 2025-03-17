@@ -70,6 +70,8 @@ private:
 
 	void SnapMovementToClimableSurfaces(float DeltaTime);
 
+	bool CheckHasReachedLedge();
+
 	void PlayClimbMontage(UAnimMontage* MontageToPlay);
 
 	UFUNCTION()
