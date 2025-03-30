@@ -25,7 +25,8 @@ void UCustomMovementComponent::BeginPlay()
 void UCustomMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+    
+    CanClimbDownLedge();
    /* TraceClimbableSurfaces();
     TraceFromEyeHeight(100.f);*/
 }
@@ -182,6 +183,14 @@ void UCustomMovementComponent::ToggleClimbing(bool bEnableClimb)
             // Enter the climb state
             PlayClimbMontage(IdleToClimbMontage);
         }
+        else if (CanClimbDownLedge())
+        {
+            Debug::Print(TEXT("Can climb down"), FColor::Cyan, 1);
+        }
+        else
+        {
+            Debug::Print(TEXT("Can NOT climb down"), FColor::Red, 1);
+        }
     }
     else
     {
@@ -197,6 +206,32 @@ bool UCustomMovementComponent::CanStartClimbing()
     if (!TraceFromEyeHeight(100.f).bBlockingHit) return false;
 
     return true;
+}
+
+bool UCustomMovementComponent::CanClimbDownLedge()
+{
+    if (IsFalling()) return false;
+
+    const FVector ComponentLocation = UpdatedComponent->GetComponentLocation();
+    const FVector ComponentForward = UpdatedComponent->GetForwardVector();
+    const FVector DownVector = -UpdatedComponent->GetUpVector();
+
+    const FVector WalkableSurfaceTraceStart = ComponentLocation + ComponentForward * ClimbDownWalkableSurfaceTraceOffset;
+    const FVector WalkableSurfaceTraceEnd = WalkableSurfaceTraceStart + DownVector * 100.f;
+
+    FHitResult WalkableSurfaceHit = DoLineTraceSingleByObject(WalkableSurfaceTraceStart, WalkableSurfaceTraceEnd, true);
+
+    const FVector LedgeTraceStart = WalkableSurfaceHit.TraceStart + ComponentForward * ClimbDownLedgeTraceOffset;
+    const FVector LedgeTraceEnd = LedgeTraceStart + DownVector * 300.f;
+
+    FHitResult LedgeTraceHit = DoLineTraceSingleByObject(LedgeTraceStart, LedgeTraceEnd, true);
+
+    if (WalkableSurfaceHit.bBlockingHit && !LedgeTraceHit.bBlockingHit)
+    {
+        return true;
+    }
+
+    return false;
 }
 
 void UCustomMovementComponent::StartClimbing()
