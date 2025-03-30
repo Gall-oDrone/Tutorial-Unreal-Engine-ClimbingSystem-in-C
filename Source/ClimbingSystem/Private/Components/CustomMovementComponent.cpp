@@ -88,6 +88,21 @@ float UCustomMovementComponent::GetMaxAcceleration() const
     }
 }
 
+FVector UCustomMovementComponent::ConstrainAnimRootMotionVelocity(const FVector& RootMotionVelocity, const FVector& CurrentVelocity) const
+{
+    const bool bIsPlayingRMMontage = 
+    IsFalling() && OwningPlayerAnimInstace&& OwningPlayerAnimInstace->IsAnyMontagePlaying();
+
+    if (bIsPlayingRMMontage)
+    {
+        return RootMotionVelocity;
+    }
+    else
+    {
+        return Super::ConstrainAnimRootMotionVelocity(RootMotionVelocity, CurrentVelocity);
+    }
+}
+
 #pragma region ClimbTraces
 
 TArray<FHitResult> UCustomMovementComponent::DoCapsuleTraceMultiByObject(const FVector& Start, const FVector& End, bool bShowDebugShape, bool bDrawPersistantShapes)
@@ -254,11 +269,8 @@ void UCustomMovementComponent::PhysClimb(float deltaTime, int32 Iterations)
 
     if (CheckHasReachedLedge())
     {
-        Debug::Print(TEXT("Ledge Reached"), FColor::Green, 1);
-    }
-    else
-    {
-        Debug::Print(TEXT("Ledge Not Reached"), FColor::Red, 1);
+        /*Debug::Print(TEXT("Ledge Reached"), FColor::Green, 1);*/
+        PlayClimbMontage(ClimbToTopMontage);
     }
 }
 
@@ -363,7 +375,7 @@ bool UCustomMovementComponent::CheckHasReachedLedge()
         const FVector WalkableSurfaceTraceEnd = WalkableSurfaceTraceStart + DownVector * 100.f;
 
         FHitResult WalkableSurfaceHitResult = 
-        DoLineTraceSingleByObject(WalkableSurfaceTraceStart, WalkableSurfaceTraceEnd, true);
+        DoLineTraceSingleByObject(WalkableSurfaceTraceStart, WalkableSurfaceTraceEnd);
 
         if (WalkableSurfaceHitResult.bBlockingHit && GetUnrotatedClimbVelocity().Z > 10.f)
         {
@@ -414,9 +426,13 @@ void UCustomMovementComponent::PlayClimbMontage(UAnimMontage* MontageToPlay)
 void UCustomMovementComponent::OnClimbMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
     if(Montage == IdleToClimbMontage)
-        {
-            StartClimbing();
-        }
+    {
+        StartClimbing();
+    }
+    else
+    {
+        SetMovementMode(MOVE_Walking);
+    }
 }
 
 FVector UCustomMovementComponent::GetUnrotatedClimbVelocity() const
