@@ -223,7 +223,7 @@ bool UCustomMovementComponent::CanClimbDownLedge()
     FHitResult WalkableSurfaceHit = DoLineTraceSingleByObject(WalkableSurfaceTraceStart, WalkableSurfaceTraceEnd, true);
 
     const FVector LedgeTraceStart = WalkableSurfaceHit.TraceStart + ComponentForward * ClimbDownLedgeTraceOffset;
-    const FVector LedgeTraceEnd = LedgeTraceStart + DownVector * 300.f;
+    const FVector LedgeTraceEnd = LedgeTraceStart + DownVector * 200.f;
 
     FHitResult LedgeTraceHit = DoLineTraceSingleByObject(LedgeTraceStart, LedgeTraceEnd, true);
 
