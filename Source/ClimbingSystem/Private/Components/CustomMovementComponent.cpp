@@ -185,12 +185,12 @@ void UCustomMovementComponent::ToggleClimbing(bool bEnableClimb)
         }
         else if (CanClimbDownLedge())
         {
-            Debug::Print(TEXT("Can climb down"), FColor::Cyan, 1);
+            /*Debug::Print(TEXT("Can climb down"), FColor::Cyan, 1);*/
             PlayClimbMontage(ClimbDownLedgeMontage);
         }
         else
         {
-            Debug::Print(TEXT("Can NOT climb down"), FColor::Red, 1);
+            /*Debug::Print(TEXT("Can NOT climb down"), FColor::Red, 1);*/
         }
     }
     else
