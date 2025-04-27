@@ -42,6 +42,8 @@ void UCustomMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovem
     {
         bOrientRotationToMovement = false;
         CharacterOwner->GetCapsuleComponent()->SetCapsuleHalfHeight(48.f);
+
+        OnEnterClimbStateDelegate.ExecuteIfBound();
     }
 
     if (PreviousMovementMode == MOVE_Custom && PreviousCustomMode == ECustomMovementMode::MOVE_Climb)
@@ -54,6 +56,8 @@ void UCustomMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovem
         UpdatedComponent->SetRelativeRotation(CleanStandRotation);
 
         StopMovementImmediately();
+
+        OnExitClimbStateDelegate.ExecuteIfBound();
     }
 
     Super::OnMovementModeChanged(PreviousMovementMode, PreviousCustomMode);
@@ -468,7 +472,7 @@ bool UCustomMovementComponent::CanStartVaulting(FVector& OutVaultStartPosition, 
 
         const FVector End = Start + DownVector * 100.f * (i + 1);
 
-        FHitResult VaultTraceHit = DoLineTraceSingleByObject(Start,End,true,true);
+        FHitResult VaultTraceHit = DoLineTraceSingleByObject(Start,End);
 
         if (i == 0 && VaultTraceHit.bBlockingHit)
         {
