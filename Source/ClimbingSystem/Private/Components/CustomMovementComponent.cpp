@@ -31,6 +31,7 @@ void UCustomMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
     
     CanClimbDownLedge();
+
    /* TraceClimbableSurfaces();
     TraceFromEyeHeight(100.f);*/
 }
@@ -543,6 +544,31 @@ void UCustomMovementComponent::OnClimbMontageEnded(UAnimMontage* Montage, bool b
     if (Montage == ClimbToTopMontage || Montage == VaultMontage)
     {
         SetMovementMode(MOVE_Walking);
+    }
+}
+
+void UCustomMovementComponent::RequestHopping()
+{
+    const FVector UnrotatedLastInputVector = 
+    UKismetMathLibrary::Quat_UnrotateVector(UpdatedComponent->GetComponentQuat(), GetLastInputVector());
+    
+    /*Debug::Print(UnrotatedLastInputVector.GetSafeNormal().ToString(), FColor::Cyan, 1);*/
+    const float DotResult =
+        FVector::DotProduct(UnrotatedLastInputVector.GetSafeNormal(), FVector::UpVector);
+
+    Debug::Print(TEXT("Dot result: ") + FString::SanitizeFloat(DotResult));
+
+    if (DotResult >= 0.9f)
+    {
+        Debug::Print(TEXT("Hop Up"));
+    }
+    else if (DotResult <= -0.9f)
+    {
+        Debug::Print(TEXT("Hop Down"));
+    }
+    else
+    {
+        Debug::Print(TEXT("Invalid Input Range"));
     }
 }
 
