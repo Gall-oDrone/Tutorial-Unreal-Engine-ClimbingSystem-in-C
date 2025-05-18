@@ -99,6 +99,10 @@ private:
 
 	bool CheckCanHopUp(FVector& OutHopUpTargetPosition);
 
+	void HandleHopDown();
+
+	bool CheckCanHopDown(FVector& OutHopDownTargetPosition);
+
 #pragma endregion
 
 #pragma region ClimbCoreVariables
